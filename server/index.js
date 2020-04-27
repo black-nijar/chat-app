@@ -10,7 +10,11 @@ const io = socketio(server);
 // Connect and Disconnect user
 io.on('connection', (socket) => {
   console.log('we have a new connection!!!');
-  
+
+  // Get data from client
+  socket.on('join', ({name, room}) => {
+    console.log(name, room)
+  })
   // Disconnect
   socket.on('disconnect', () => {
     console.log('user had left')

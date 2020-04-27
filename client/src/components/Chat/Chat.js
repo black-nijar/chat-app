@@ -1,36 +1,23 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import queryString from "query-string";
+import io from "socket.io-client";
 
-const Chat = () => {
+let socket;
+
+const Chat = ({ location }) => {
   const [name, setName] = useState("");
   const [room, setRoom] = useState("");
+  const END_POINT = 'localhost:5000';
 
-  return (
-    <div className="joinOuterContainer">
-      <div className="joinInnerContainer">
-        <h1 className="heading">Join</h1>
-        <div>
-          <input
-            placeholder="Name"
-            className="joinInput"
-            type="text"
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-        <div>
-          <input
-            placeholder="Room"
-            className="joinInput mt-20"
-            type="text"
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-        <Link to={`/chat?name=${name}&room=${room}`} onClick={e => (!name || !room) ? e.preventDefault(): null}>
-          <button className='button mt-20' type='submit'>Sign In</button>
-        </Link>
-      </div>
-    </div>
-  );
+  useEffect(() => {
+    const { name, room } = queryString.parse(location.search);
+    setName(name);
+    setRoom(room);
+    socket = io(END_POINT)
+    console.log(socket)
+    socket.emit('join', {name, room})
+  },[END_POINT, location.search]);
+  return <div>Chat</div>;
 };
 
 export default Chat;
